@@ -1,0 +1,13 @@
+name: CD-auto
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  cd:
+    uses: mihaigalos/config/.github/workflows/rust-cd-auto.yaml@main
+    secrets:
+      CARGO_API_KEY: ${{ secrets.CARGO_API_KEY }}
+

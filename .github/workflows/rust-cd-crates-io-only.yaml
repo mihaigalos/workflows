@@ -1,0 +1,59 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+  workflow_dispatch: # Run with Run Workflow button in GitHub Action Job, set debug_enabled=true for interactive ssh session.
+    inputs:
+      debug_enabled:
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
+        required: false
+        default: false
+
+  workflow_call:
+    secrets:
+      CARGO_API_KEY:
+        required: true
+
+jobs:
+  common-assertions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cargo version matches tag
+        if: github.event_name == 'push'
+        run: |
+          function ok() {
+            echo -e "\e[1;32mOK\e[0m"
+          }  
+          function err() {
+            echo -e "\e[1;31m${@}\e[0m" >&2
+            exit 1
+          }
+
+          CRATE_VERSION=$(cat Cargo.toml | grep -e "^version" | head -1 | cut -d '=' -f2 | sed -e "s/ //" -e "s/\"//g")
+          [[ $GITHUB_REF == *"refs/tags"* ]] && TAG=$GITHUB_REF || err "Cannot determine git tag."
+          TAG=${TAG/refs\/tags\//}
+          [ "$CRATE_VERSION" = "$TAG" ] && ok "OK" || err "ERROR: Crate version does not match the git (release) tag."  
+
+  publish-to-cargo:
+    name: Publishing to Cargo
+    if: github.event_name == 'push'
+    needs:
+      - common-assertions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: --token ${{ secrets.CARGO_API_KEY }} --allow-dirty
