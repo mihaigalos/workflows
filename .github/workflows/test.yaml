@@ -12,6 +12,10 @@ jobs:
       matrix: ${{ steps.setup.outputs.matrix }}
 
     steps:
+    - name: Print SHA
+      run: |
+        echo ${{ github.job_workflow_sha }}
+
     - name: Setup
       id: setup
       env:
