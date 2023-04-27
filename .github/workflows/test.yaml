@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - name: Print SHA
+      env: 
+        SHA: mihaigalos-patch-1
       run: |
         echo ${{ github.job_workflow_sha }}
 
