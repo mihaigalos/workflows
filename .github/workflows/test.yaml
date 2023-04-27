@@ -14,9 +14,12 @@ jobs:
     steps:
     - name: Print SHA
       env: 
-        SHA: mihaigalos-patch-1
+        SHA: ${{ github.job_workflow_sha }}
+        ALL: ${{ github }}
       run: |
         echo $SHA
+        echo ----------------
+        echo $ALL | jq
 
     - name: Setup
       id: setup
