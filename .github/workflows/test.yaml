@@ -15,7 +15,7 @@ jobs:
     - name: Print SHA
       env: 
         SHA: ${{ github.job_workflow_sha }}
-        ALL: ${{ github }}
+        ALL: ${{ toJson(github) }}
       run: |
         echo $SHA
         echo ----------------
