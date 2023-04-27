@@ -3,5 +3,5 @@ on:
   workflow_dispatch:
 jobs:
   ci:
-    uses: mihaigalos/workflows/.github/workflows/test.yaml@main
+    uses: mihaigalos/workflows/.github/workflows/test.yaml@mihaigalos-patch-1
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
