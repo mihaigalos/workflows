@@ -1,0 +1,10 @@
+name: CI
+on:
+  push:
+    paths-ignore:
+      - '*.md'
+      - 'screenshots/**'
+jobs:
+  ci:
+    uses: mihaigalos/workflows/.github/workflows/test.yaml@main
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
