@@ -16,7 +16,7 @@ jobs:
       env: 
         SHA: mihaigalos-patch-1
       run: |
-        echo ${{ github.job_workflow_sha }}
+        echo $SHA
 
     - name: Setup
       id: setup
