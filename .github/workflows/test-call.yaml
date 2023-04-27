@@ -1,9 +1,6 @@
 name: CI
 on:
-  push:
-    paths-ignore:
-      - '*.md'
-      - 'screenshots/**'
+  workflow_dispatch:
 jobs:
   ci:
     uses: mihaigalos/workflows/.github/workflows/test.yaml@main
