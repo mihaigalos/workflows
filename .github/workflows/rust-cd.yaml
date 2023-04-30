@@ -116,7 +116,7 @@ jobs:
       - name: Get pack script
         shell: bash
         run: |
-          wget https://raw.githubusercontent.com/mihaigalos/config/main/.github/workflows/rust-pack.sh -O .github/workflows/rust-pack.sh
+          wget https://raw.githubusercontent.com/mihaigalos/workflows/main/.github/workflows/rust-pack.sh -O .github/workflows/rust-pack.sh
           chmod +x .github/workflows/rust-pack.sh
 
       - name: Packaging final binary
