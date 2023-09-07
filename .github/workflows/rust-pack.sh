@@ -31,9 +31,9 @@ pack() {
         "${gcc_prefix}"strip "$tempdir/$package_name/$PROJECT_NAME"
     fi
 
-    # manpage, readme and license
+    # manpage, readme and licence
     cp README.md "$tempdir/$package_name"
-    cp LICENSE.md "$tempdir/$package_name"
+    cp LICENCE.md "$tempdir/$package_name"
 
     # archiving
     pushd "$tempdir/$package_name"
@@ -105,7 +105,7 @@ make_deb() {
     depends="$(dpkg-shlibdeps $library_dir -O "$tempdir/usr/bin/$PROJECT_NAME" 2> /dev/null | sed 's/^shlibs:Depends=//')"
     rm -rf "./debian"
 
-    # readme and license
+    # readme and licence
     install -Dm644 README.md "$tempdir/usr/share/doc/$dpkgname/README.md"
     cat > "$tempdir/usr/share/doc/$dpkgname/copyright" <<EOF
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
@@ -113,9 +113,9 @@ Upstream-Name: $PROJECT_NAME
 Source: $HOMEPAGE
 Files: *
 Copyright: $COPYRIGHT_YEARS $MAINTAINER
-License: 
+Licence: 
 EOF
-    cat LICENSE.md >> "$tempdir/usr/share/doc/$dpkgname/copyright"
+    cat LICENCE.md >> "$tempdir/usr/share/doc/$dpkgname/copyright"
     chmod 644 "$tempdir/usr/share/doc/$dpkgname/copyright"
 
     # Control file
