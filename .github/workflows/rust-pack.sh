@@ -18,6 +18,8 @@ pack() {
         gcc_prefix="arm-linux-gnueabihf-"
     elif [[ $TARGET == "aarch64-unknown-linux-gnu" ]]; then
         gcc_prefix="aarch64-linux-gnu-"
+    elif [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
+        gcc_prefix="aarch64-linux-musl-"
     else
         gcc_prefix=""
     fi
