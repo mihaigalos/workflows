@@ -98,7 +98,7 @@ jobs:
           fi
           if [[ ${{ matrix.job.target }} == aarch64-unknown-linux-musl ]]; then
               sudo apt update
-              sudo apt-get install -y musl
+              sudo apt-get install -y musl musl-tools
           fi
           if [[ ${{ matrix.job.target }} == x86_64-unknown-linux-musl ]]; then
               rustup target add x86_64-unknown-linux-musl
