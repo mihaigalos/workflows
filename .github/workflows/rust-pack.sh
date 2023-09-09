@@ -19,7 +19,7 @@ pack() {
     elif [[ $TARGET == "aarch64-unknown-linux-gnu" ]]; then
         gcc_prefix="aarch64-linux-gnu-"
     elif [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
-        gcc_prefix="aarch64-linux-musl-"
+        gcc_prefix="/home/runner/work/aim/aim/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" # TODO: Refactorme
     else
         gcc_prefix=""
     fi
@@ -68,9 +68,14 @@ make_deb() {
             gcc_prefix=""
             library_dir=""
             ;;
-        aarch64*)
+        aarch64-unknown-linux-gnu*)
             architecture=arm64
             gcc_prefix="aarch64-linux-gnu-"
+            library_dir="-l/usr/aarch64-linux-gnu/lib"
+            ;;
+        aarch64-unknown-linux-musl*)
+            architecture=arm64
+            gcc_prefix="/home/runner/work/aim/aim/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" #TODO: Refactorme
             library_dir="-l/usr/aarch64-linux-gnu/lib"
             ;;
         arm*hf)
@@ -115,7 +120,7 @@ Upstream-Name: $PROJECT_NAME
 Source: $HOMEPAGE
 Files: *
 Copyright: $COPYRIGHT_YEARS $MAINTAINER
-Licence: 
+Licence:
 EOF
     cat LICENCE.md >> "$tempdir/usr/share/doc/$dpkgname/copyright"
     chmod 644 "$tempdir/usr/share/doc/$dpkgname/copyright"
@@ -139,6 +144,13 @@ EOF
 }
 
 main() {
+    if [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
+        wget https://musl.cc/aarch64-linux-musl-cross.tgz -q --show-progress --progress=bar:force 2>&1
+        tar zxf aarch64-linux-musl-cross.tgz
+        echo "Realpath: $(realpath aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip)"
+        MY_MUSL_PATH=$(realpath aarch64-linux-musl-cross/bin)
+        echo "${MY_MUSL_PATH}" >> $GITHUB_PATH
+    fi
     pack
     if [[ $TARGET = *linux* ]]; then
       make_deb
