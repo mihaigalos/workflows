@@ -137,7 +137,6 @@ jobs:
         run: ./.github/workflows/rust-pack.sh
 
       - name: Releasing assets
-        if: github.event_name == 'push'
         uses: softprops/action-gh-release@v1
         with:
           files: |
