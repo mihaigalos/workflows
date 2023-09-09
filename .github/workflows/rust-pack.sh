@@ -19,7 +19,7 @@ pack() {
     elif [[ $TARGET == "aarch64-unknown-linux-gnu" ]]; then
         gcc_prefix="aarch64-linux-gnu-"
     elif [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
-        gcc_prefix="/home/runner/work/aim/aim/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" # TODO: Refactorme
+        gcc_prefix="/tmp/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" # TODO: Refactorme
     else
         gcc_prefix=""
     fi
@@ -75,7 +75,7 @@ make_deb() {
             ;;
         aarch64-unknown-linux-musl*)
             architecture=arm64
-            gcc_prefix="/home/runner/work/aim/aim/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" #TODO: Refactorme
+            gcc_prefix="/tmp/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" #TODO: Refactorme
             library_dir="-l/usr/aarch64-linux-gnu/lib"
             ;;
         arm*hf)
@@ -147,9 +147,7 @@ main() {
     if [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
         wget https://musl.cc/aarch64-linux-musl-cross.tgz -q --show-progress --progress=bar:force 2>&1
         tar zxf aarch64-linux-musl-cross.tgz
-        echo "Realpath: $(realpath aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip)"
-        MY_MUSL_PATH=$(realpath aarch64-linux-musl-cross/bin)
-        echo "${MY_MUSL_PATH}" >> $GITHUB_PATH
+        mv aarch64-linux-musl-cross/ /tmp
     fi
     pack
     if [[ $TARGET = *linux* ]]; then
