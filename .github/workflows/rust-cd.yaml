@@ -31,11 +31,11 @@ on:
         type: string
     secrets:
       CARGO_API_KEY:
-        required: true
+        required: false
       DOCKER_USERNAME:
-        required: true
+        required: false
       DOCKER_PASSWORD:
-        required: true
+        required: false
 jobs:
   common-assertions:
     runs-on: ubuntu-latest
