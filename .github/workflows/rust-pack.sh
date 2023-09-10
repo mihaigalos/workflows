@@ -35,7 +35,7 @@ pack() {
 
     # manpage, readme and licence
     cp README.md "$tempdir/$package_name"
-    cp LICENCE.md "$tempdir/$package_name"
+    cp LICENCE.md "$tempdir/$package_name" || cp LICENSE.md "$tempdir/$package_name"
 
     # archiving
     pushd "$tempdir/$package_name"
@@ -122,7 +122,8 @@ Files: *
 Copyright: $COPYRIGHT_YEARS $MAINTAINER
 Licence:
 EOF
-    cat LICENCE.md >> "$tempdir/usr/share/doc/$dpkgname/copyright"
+    if [ -f LICENCE.md ]; then licence_file="LICENCE.md"; else licence_file="LICENSE.md"; fi
+    cat $licence_file >> "$tempdir/usr/share/doc/$dpkgname/copyright"
     chmod 644 "$tempdir/usr/share/doc/$dpkgname/copyright"
 
     # Control file
