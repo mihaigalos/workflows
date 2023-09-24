@@ -3,12 +3,11 @@ name: CD
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
 
-  workflow_dispatch: # Run with Run Workflow button in GitHub Action Job, set debug_enabled=true for interactive ssh session.
+  workflow_dispatch:   # Run with Run Workflow button in GitHub Action Job, set debug_enabled=true for interactive ssh session.
     inputs:
       debug_enabled:
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        description: Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)
         required: false
         default: false
 
@@ -21,29 +20,28 @@ jobs:
       maintainer: ${{ steps.set-outputs.outputs.maintainer }}
       project-name: ${{ steps.set-outputs.outputs.project-name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set outputs
-        id: set-outputs
-        run: |
-          set -eu pipefail
-          echo "description=$(grep ^description Cargo.toml | cut -d'=' -f2 | sed -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
-          echo "homepage=$(grep ^repository Cargo.toml | cut -d'=' -f2 | sed -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
-          echo "maintainer=$(grep ^authors Cargo.toml | cut -d'=' -f2 | sed -e 's/[][]//g' -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
-          echo "project-name=$(grep ^name Cargo.toml | cut -d'=' -f2 | sed -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set outputs
+      id: set-outputs
+      run: |
+        set -eu pipefail
+        echo "description=$(grep ^description Cargo.toml | cut -d'=' -f2 | sed -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
+        echo "homepage=$(grep ^repository Cargo.toml | cut -d'=' -f2 | sed -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
+        echo "maintainer=$(grep ^authors Cargo.toml | cut -d'=' -f2 | sed -e 's/[][]//g' -e 's/\s*//' -e 's/\"//g')" >> $GITHUB_OUTPUT
+        project_name=$(sed -n '/\[\[bin\]\]/,/^$/p' Cargo.toml | grep name | tr -d '\n' | tr -d '\r' | sed -e 's/.*"\(.*\)".*/\1/g')
+
+        [[ $project_name == "" ]] && project_name=$(grep ^name Cargo.toml | cut -d'=' -f2 | sed -e 's/\s*//' -e 's/\"//g') || true
+
+        echo "project-name=$project_name" >> $GITHUB_OUTPUT
 
   cd:
-    uses: mihaigalos/config/.github/workflows/rust-cd.yaml@main
+    uses: mihaigalos/workflows/.github/workflows/rust-cd.yaml@main
     needs:
-      - generate-cd-inputs
+    - generate-cd-inputs
     with:
       COPYRIGHT_YEARS: 2021-3021
       DESCRIPTION: ${{ needs.generate-cd-inputs.outputs.description }}
       HOMEPAGE: ${{ needs.generate-cd-inputs.outputs.homepage }}
       MAINTAINER: ${{ needs.generate-cd-inputs.outputs.maintainer }}
       PROJECT_NAME: ${{ needs.generate-cd-inputs.outputs.project-name }}
-    secrets:
-      CARGO_API_KEY: ${{ secrets.CARGO_API_KEY }}
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
