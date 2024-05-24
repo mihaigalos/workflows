@@ -88,6 +88,9 @@ jobs:
           RUSTFLAGS: "-C target-feature=-crt-static"
         shell: bash
         run: |
+          if [[ ${{ matrix.job.target }} == x86_64-apple-darwin ]]; then
+              rustup target add x86_64-apple-darwin
+          fi
           if [[ ${{ matrix.job.target }} == arm-unknown-linux-gnueabihf ]]; then
               sudo apt update
               sudo apt-get install -y binutils-arm-linux-gnueabihf
