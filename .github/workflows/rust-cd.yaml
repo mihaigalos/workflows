@@ -116,11 +116,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          wget -O - https://github.com/orhun/git-cliff/releases/download/v2.5.0/git-cliff-2.5.0-x86_64-unknown-linux-musl.tar.gz | tar -xz -C /tmp
-          /tmp/git-cliff-2.5.0/git-cliff init
-          /tmp/git-cliff-2.5.0/git-cliff --output CHANGELOG.md
+          wget -O - https://github.com/orhun/git-cliff/releases/download/v2.8.0/git-cliff-2.8.0-x86_64-unknown-linux-musl.tar.gz | tar -xz -C /tmp
+          /tmp/git-cliff-*/git-cliff init
+          /tmp/git-cliff-*/git-cliff --output CHANGELOG.md
           git add . && git commit -m "chore: Changelog - Generate" && git push
-
 
       - name: Cargo build
         env:
