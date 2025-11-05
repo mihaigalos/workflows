@@ -146,7 +146,9 @@ EOF
 
 main() {
     if [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
-        wget https://musl.cc/aarch64-linux-musl-cross.tgz -q --show-progress --progress=bar:force 2>&1
+        echo "Downloading aarch64-linux-musl-cross toolchain (103MB, ~1-5 minutes)..."
+        wget --retry-connrefused --waitretry=1 --read-timeout=300 --timeout=60 -t 5 \
+          https://musl.cc/aarch64-linux-musl-cross.tgz --progress=dot:giga 2>&1
         tar zxf aarch64-linux-musl-cross.tgz
         mv aarch64-linux-musl-cross/ /tmp
     fi
