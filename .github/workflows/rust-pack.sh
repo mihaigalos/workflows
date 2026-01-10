@@ -19,7 +19,7 @@ pack() {
     elif [[ $TARGET == "aarch64-unknown-linux-gnu" ]]; then
         gcc_prefix="aarch64-linux-gnu-"
     elif [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
-        gcc_prefix="/tmp/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" # TODO: Refactorme
+        gcc_prefix="llvm-" # Use llvm-strip which handles multiple architectures
     else
         gcc_prefix=""
     fi
@@ -75,7 +75,7 @@ make_deb() {
             ;;
         aarch64-unknown-linux-musl*)
             architecture=arm64
-            gcc_prefix="/tmp/aarch64-linux-musl-cross/bin/aarch64-linux-musl-" #TODO: Refactorme
+            gcc_prefix="llvm-" # Use llvm-strip which handles multiple architectures
             library_dir="-l/usr/aarch64-linux-gnu/lib"
             ;;
         arm*hf)
@@ -145,13 +145,6 @@ EOF
 }
 
 main() {
-    if [[ $TARGET == "aarch64-unknown-linux-musl" ]]; then
-        echo "Downloading aarch64-linux-musl-cross toolchain (103MB, ~1-5 minutes)..."
-        wget --retry-connrefused --waitretry=1 --read-timeout=300 --timeout=60 -t 5 \
-          https://musl.cc/aarch64-linux-musl-cross.tgz --progress=dot:giga 2>&1
-        tar zxf aarch64-linux-musl-cross.tgz
-        mv aarch64-linux-musl-cross/ /tmp
-    fi
     pack
     if [[ $TARGET = *linux* ]]; then
       make_deb
